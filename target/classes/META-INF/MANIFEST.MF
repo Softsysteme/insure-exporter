@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Built-By: mpouma
+Build-Jdk: 1.8.0_101
+Specification-Title: insure-exporter
+Specification-Version: 0.0.1-SNAPSHOT
+Specification-Vendor: in|SURE
+Implementation-Title: insure-exporter
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: insure-exporter
+Implementation-Vendor: in|SURE
+Created-By: Maven Integration for Eclipse
+
