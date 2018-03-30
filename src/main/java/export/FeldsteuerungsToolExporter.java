@@ -1,9 +1,11 @@
 package export;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import insure.tools.feldsteuerung.persistence.FeldsteuerungService;
 import insure.tools.feldsteuerung.persistence.entities.Context;
 import insure.tools.feldsteuerung.persistence.entities.Field;
+import insure.tools.feldsteuerung.persistence.entities.FieldConfiguration;
 import utils.EPackageNsUriFinder;
 
 public class FeldsteuerungsToolExporter {
@@ -41,7 +44,9 @@ public class FeldsteuerungsToolExporter {
 
     public InputStream export() {
         setDocumentHead(uriFinder, domainData);
-        return null;
+        setDocumentBody(uriFinder, service, domainData);
+        this.setDocumentFooter(domainData);
+        return new ByteArrayInputStream(domainData.toString().getBytes(StandardCharsets.UTF_8));
 
     }
 
@@ -74,7 +79,14 @@ public class FeldsteuerungsToolExporter {
     }
 
     public void setDocumentBody(EPackageNsUriFinder finder, FeldsteuerungService service, String doc) {
+        this.setEnumerationsInputFieldsCharacteristics(doc);
+        this.setEnumerationsFields(finder, service.getFields(), doc);
+        this.setEnumerationsContext(finder, service.getContexts(), doc);
+        this.setPrototypeFieldsCharacteristics(doc);
+    }
 
+    public void setDocumentFooter(String doc) {
+        doc += "</core:RootRepository>";
     }
 
     public void setEnumerationsContext(EPackageNsUriFinder finder, List<Context> contextList, String doc) {
@@ -165,10 +177,74 @@ public class FeldsteuerungsToolExporter {
         doc += "<prototypes xsi:type =" + "\"" + "feldsteuerung" + ":" + "StandardFeldelementeigenschaften" + "\"" + " modelElementId=" + "\"" + "_SuVeKSbaEeWDoMiQXiXZDQ" + "\"" + " name=" + "\""
                 + "Standard"
                 + "\"" + "/>" + "\n";
-        doc += "<standardEingabeelementeigenschaft href =" + "\"" + "_5vjZWtO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
-        doc += "<standardSteuerelementeigenschaft href =" + "\"" + "_dP-dTNRiEeSM0uBkjWoRCg" + "\"" + "/>" + "\n";
-        doc += "</repositories>" + "\n";
+        doc += "<standardEingabeelementeigenschaft href =" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_5vjZWtO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+        doc += "<standardSteuerelementeigenschaft href =" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_dP-dTNRiEeSM0uBkjWoRCg" + "\"" + "/>" + "\n";
+        doc += "</prototypes>" + "\n";
+        List<Context> contextList = service.getContexts();
+        Iterator<Context> iterContext = contextList.iterator();
+        while (iterContext.hasNext()) {
+            Context nextContext = iterContext.next();
+            doc += "<prototypes xsi:type =" + "\"" + "feldsteuerung" + ":" + "Feldelementeigenschaften" + "\"" + " modelElementId=" + "\"" + nextContext.getAlias().hashCode() + "\"" + " name="
+                    + "\""
+                    + nextContext.getAlias()
+                    + "\"" + "/>" + "\n";
+            for (int i = 0; i < service.getFields().size(); i++) {
+                FieldConfiguration config = service.getFieldConfigurationByFieldAndContext(service.getFields().get(i), nextContext);
+                if (config != null) {
+                    switch (service.getFields().get(i).getMetadata().getType().name()) {
+                        case "BUTTON": {
+                            doc += "<steuerelementeigenschaften key =" + "\"" + service.getFields().get(i).getIdentifier() + "\"" + "/>" + "\n";
+                            if (config.isRendered()) {
+                                doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_W312d9RiEeSM0uBkjWoRCg" + "\"" + "/>" + "\n";
+                            } else {
+                                doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_dP-dTNRiEeSM0uBkjWoRCg" + "\"" + "/>" + "\n";
+                            }
+                            doc += "</steuerelementeigenschaften>" + "\n";
+                            break;
+                        }
+                        default: {
+                            doc += "<engabeelementeigenschaften key =" + "\"" + service.getFields().get(i).getIdentifier() + "\"" + "/>" + "\n";
+                            if (config.isRendered()) {
+                                if (config.isEditable()) {
+                                    if (config.isRequired()) {
+                                        doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_2ASSStO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+                                    } else {
+                                        doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_zaTuitO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+                                    }
+                                } else {
+                                    doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_u9rLKtO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+                                }
+                            } else {
+                                if (config.isEditable()) {
+                                    if (config.isRequired()) {
+                                        doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#__hrI-tO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+                                    } else {
+                                        doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_8DP6StO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+                                    }
+                                } else {
+                                    doc += "<value href=" + "\"" + "platform:/plugin/insure.infoservice.daten/src/main/resources/infoservice.insure#_5vjZWtO_EeSVoOolBb6ZYQ" + "\"" + "/>" + "\n";
+                                }
+                            }
+                            doc += "</eingabeelementeigenschaften>" + "\n";
+                            break;
+                        }
+                    }
+                }
+            }
+            doc += "</prototypes>" + "\n";
+        }
 
+        doc += "<prototypes xsi:type =" + "\"" + "feldsteuerung" + ":" + "Feldsteuerung" + "\"" + " modelElementId=" + "\"" + service.hashCode() + "\"" + " name=" + "\""
+                + ""
+                + "\"" + "/>" + "\n";
+        Iterator<?> iter = contextList.iterator();
+        while (iter.hasNext()) {
+            Context next = (Context) iter.next();
+            doc += "<feldelementeigenschaften  value =" + "\"" + next.getUuid() + "\"" + "key =" + "\"" + next.getAlias().hashCode() + "\"" + "/>" + "\n";
+            doc += "</feldelementeigenschaften>" + "\n";
+        }
+        doc += "</prototypes>" + "\n";
+        doc += "</repositories>" + "\n";
     }
 
     public String findNsUri(String name, EPackageNsUriFinder finder) {

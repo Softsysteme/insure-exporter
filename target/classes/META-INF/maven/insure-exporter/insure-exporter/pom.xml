@@ -36,6 +36,28 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>insure.infoservice</groupId>
+			<artifactId>insure-infoservice-modell</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.adesso.ais.infoservice-reference</groupId>
+			<artifactId>infoservice-reference-modell</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>insure.domain</groupId>
+			<artifactId>insure.domain.modell</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.adesso.ais.domain-reference</groupId>
+			<artifactId>de.adesso.ais.domainreference.modell</artifactId>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>insure-exporter-parent</groupId>
