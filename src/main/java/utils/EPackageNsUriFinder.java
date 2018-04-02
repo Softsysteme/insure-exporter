@@ -3,6 +3,7 @@ package utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,12 +22,12 @@ public class EPackageNsUriFinder {
     InsureExporterCacheManager cm = InsureExporterCacheManager.INSTANCE;
     private Map<String, ArrayList<String>> packageAndClassesMap = new HashMap<String, ArrayList<String>>();
     private Map<String, String> prefix2NsUri = new HashMap<String, String>();
-    private String[] ecorePaths;
+    private List<String> ecorePaths;
 
-    public EPackageNsUriFinder(String[] ecorePaths) {
+    public EPackageNsUriFinder(List<String> ecorePaths) {
         this.setEcorePaths(ecorePaths);
-        for (int k = 0; k < ecorePaths.length; k++) {
-            init(parseEcoreDoc(ecorePaths[k]));
+        for (int k = 0; k < ecorePaths.size(); k++) {
+            init(parseEcoreDoc(ecorePaths.get(k)));
         }
     }
 
@@ -42,6 +43,7 @@ public class EPackageNsUriFinder {
         // Build Document
         Document ecoreDocument = null;
         try {
+            System.out.println(ecorePath);
             ecoreDocument = builder.parse(this.getClass().getResourceAsStream(ecorePath));
         } catch (SAXException | IOException e) {
             // TODO Auto-generated catch block
@@ -71,10 +73,12 @@ public class EPackageNsUriFinder {
     public void visitPackage(Node node, Document document) {
         String packageName = node.getAttributes().getNamedItem("name").getNodeValue();
         String NsUri = node.getAttributes().getNamedItem("nsURI").getNodeValue();
-        if (cm.retrieveFromCache(packageName) != null) {
+        if (prefix2NsUri.containsKey(packageName)) {
             packageName = packageName + "_" + NsUri.hashCode();
             prefix2NsUri.put(packageName, NsUri);
             // cm.putInCache(packageName, NsUri);
+        } else {
+            prefix2NsUri.put(packageName, NsUri);
         }
         ArrayList<String> classes = new ArrayList<String>();
         for (int i = 0; i < node.getChildNodes().getLength(); i++) {
@@ -95,12 +99,12 @@ public class EPackageNsUriFinder {
         this.packageAndClassesMap = packageAndClassesMap;
     }
 
-    public String[] getEcorePaths() {
+    public List<String> getEcorePaths() {
         return ecorePaths;
     }
 
-    public void setEcorePaths(String[] ecorePaths) {
-        this.ecorePaths = ecorePaths;
+    public void setEcorePaths(List<String> ecorePaths2) {
+        this.ecorePaths = ecorePaths2;
     }
 
 }

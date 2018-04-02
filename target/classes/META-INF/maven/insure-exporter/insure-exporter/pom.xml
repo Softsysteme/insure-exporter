@@ -44,7 +44,7 @@
 		</dependency>
 		<dependency>
 			<groupId>insure.infoservice</groupId>
-			<artifactId>insure-infoservice-modell</artifactId>
+			<artifactId>insure.infoservice.modell</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.adesso.ais.infoservice-reference</groupId>
