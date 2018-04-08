@@ -43,7 +43,6 @@ public class EPackageNsUriFinder {
         // Build Document
         Document ecoreDocument = null;
         try {
-            System.out.println(ecorePath);
             ecoreDocument = builder.parse(this.getClass().getResourceAsStream(ecorePath));
         } catch (SAXException | IOException e) {
             // TODO Auto-generated catch block
