@@ -18,14 +18,16 @@ import utils.EPackageNsUriFinder;
 public abstract class AbstractExporter {
     protected Object service;
     protected String ecorePath;
+    protected String outputXmlName;
     protected EPackageNsUriFinder uriFinder;
     protected List<String> referencedEcoreFilePaths = new ArrayList<String>();
     protected List<String> allPaths = new ArrayList<String>();
     protected String domainData = " ";
 
-    public AbstractExporter(String ecorePath, Object service) {
+    public AbstractExporter(String ecorePath, Object service, String fileName) {
         this.service = service;
         this.ecorePath = ecorePath;
+        this.outputXmlName = fileName;
         findReferences(this.getClass().getResourceAsStream(ecorePath));
         addReferencedFilesToList();
 
@@ -39,12 +41,6 @@ public abstract class AbstractExporter {
         return new ByteArrayInputStream(domainData.toString().getBytes(StandardCharsets.UTF_8));
 
     }
-
-    public abstract void setDocumentHead();
-
-    public abstract void setDocumentBody();
-
-    public abstract void setDocumentFooter();
 
     public String findNsUri(String name, EPackageNsUriFinder finder) {
 
@@ -88,4 +84,10 @@ public abstract class AbstractExporter {
         uriFinder = new EPackageNsUriFinder(allPaths);
 
     }
+
+    public abstract void setDocumentHead();
+
+    public abstract void setDocumentBody();
+
+    public abstract void setDocumentFooter();
 }

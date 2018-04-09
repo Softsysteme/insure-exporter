@@ -16,6 +16,9 @@ public class FeldsteuerungsToolExporterTest {
     static FeldsteuerungExporter exporter;
     static String ecorePath = "/infoservice.ecore";
     static String identName = "MUSTER";
+    static String feldsteuerungName = "MUSTERSYSTEM";
+    static String fileName = "exported-infoservice-reference.insure";
+
     static FeldsteuerungService service = new FeldsteuerungService(FeldsteuerungPersistenceService.getInstance(getTestDatabaseFile()));
 
     public static String getTestDatabaseFile() {
@@ -25,7 +28,7 @@ public class FeldsteuerungsToolExporterTest {
 
     @BeforeClass
     public static void init() {
-        exporter = new FeldsteuerungExporter(ecorePath, service, identName);
+        exporter = new FeldsteuerungExporter(ecorePath, service, identName, feldsteuerungName, fileName);
     }
 
     @Test
