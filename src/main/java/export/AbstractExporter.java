@@ -23,6 +23,9 @@ public abstract class AbstractExporter {
     protected List<String> referencedEcoreFilePaths = new ArrayList<String>();
     protected List<String> allPaths = new ArrayList<String>();
     protected String domainData = " ";
+    protected boolean docHeadSeted;
+    protected boolean docBodySeted;
+    protected boolean docFooterSeted;
 
     public AbstractExporter(String ecorePath, Object service, String fileName) {
         this.service = service;

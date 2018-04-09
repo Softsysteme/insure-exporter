@@ -32,18 +32,25 @@ public class FeldsteuerungExporter extends AbstractExporter {
         }
 
         domainData += " " + "name = " + "\"" + "exportedinfoservicereference" + "\"" + " beschreibung = " + "\"" + "Datenmodell des infoservice fuer exportierten Referenzdomaene" + "\"" + ">" + "\n";
+        docHeadSeted = true;
     }
 
     @Override
     public void setDocumentBody() {
-        this.setEnumerationsFields();
-        this.setEnumerationsContext();
-        this.setPrototypeFieldsCharacteristics();
+        if (docHeadSeted) {
+            this.setEnumerationsFields();
+            this.setEnumerationsContext();
+            this.setPrototypeFieldsCharacteristics();
+            docBodySeted = true;
+        }
     }
 
     @Override
     public void setDocumentFooter() {
-        domainData += "</core:RootRepository>";
+        if (docBodySeted) {
+            domainData += "</core:RootRepository>";
+            docFooterSeted = true;
+        }
     }
 
     public void setEnumerationsContext() {
